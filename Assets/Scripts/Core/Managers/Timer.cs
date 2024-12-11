@@ -9,7 +9,7 @@ public class Timer
     private int _timeToWait;
     
     public event Action<int> OnSecondPassed;
-
+    public event Action<int> OnTimerStarted;
     public Timer(int timeToWait)
     {
         _timeToWait = timeToWait;
@@ -20,6 +20,7 @@ public class Timer
         _timerTime = _timeToWait;
         _elapsedTime = 0;
         _isRunning = true;
+        OnTimerStarted?.Invoke(_timerTime);
     }
         
     public void StopClock() => _isRunning = false;

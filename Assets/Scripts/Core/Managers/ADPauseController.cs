@@ -1,4 +1,3 @@
-using System;
 using CORE.GameStates;
 using CORE.UI;
 using Patterns.ServiceLocator;
@@ -32,11 +31,13 @@ public class ADPauseController : MonoBehaviour
     private void SubscribeEvents()
     {
         _timer.OnSecondPassed += TimerOnOnSecondPassed;
+        _timer.OnTimerStarted += TimerOnOnTimerStarted;
     }
-    
+
     private void UnsubscribeEvents()
     {
         _timer.OnSecondPassed -= TimerOnOnSecondPassed;
+        _timer.OnTimerStarted -= TimerOnOnTimerStarted;
     }
 
     private void TimerOnOnSecondPassed(int countdownTime)
@@ -44,6 +45,11 @@ public class ADPauseController : MonoBehaviour
         _uiManager.UpdatePauseTimerView(countdownTime);
         if (countdownTime > 0) return;
         ContinueGame();
+    }
+    
+    private void TimerOnOnTimerStarted(int countdownTime)
+    {
+        _uiManager.UpdatePauseTimerView(countdownTime);
     }
     
     public void OnPauseStateEnter()

@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using CORE.UI;
 using TMPro;
 using UnityEngine;
@@ -9,8 +8,8 @@ public class ADPauseScreen : AbstractScreen
     [SerializeField]
     private TextMeshProUGUI _countDownText;
 
-    public void UpdatePauseTimerView(int newScore)
+    public void UpdatePauseTimerView(int countdownTime)
     {
-        _countDownText.text = newScore.ToString();
+        _countDownText.text = TimeSpan.FromSeconds(countdownTime).ToString();
     }
 }
