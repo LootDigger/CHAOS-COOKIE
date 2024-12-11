@@ -10,11 +10,12 @@ public class ADPauseController : MonoBehaviour
     
     private Timer _timer;
     private CoreStateMachine _stateMachine;
-    
+    private IGameSettingsProvider _gameSettingsProvider;
+
     private void Start()
     {
-        _timer = new Timer(10);
-        _stateMachine = ServiceLocator.GetService<CoreStateMachine>();
+        GetServices();
+        _timer = new Timer(_gameSettingsProvider.Settings.ADPauseDuration);
         SubscribeEvents();
     }
 
@@ -26,6 +27,12 @@ public class ADPauseController : MonoBehaviour
     private void OnDestroy()
     {
         UnsubscribeEvents();
+    }
+
+    private void GetServices()
+    {
+        _gameSettingsProvider = ServiceLocator.GetService<IGameSettingsProvider>();
+        _stateMachine = ServiceLocator.GetService<CoreStateMachine>();
     }
 
     private void SubscribeEvents()

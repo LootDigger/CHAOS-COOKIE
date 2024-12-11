@@ -8,6 +8,9 @@ public class Bootstrap : MonoBehaviour
     [SerializeField]
     private CoreStateMachine _coreStateMachine;
     
+    [SerializeField]
+    private GameSettingsSO _gameSettingsSO;
+    
     private void Awake()
     {
         InitServices();
@@ -23,6 +26,12 @@ public class Bootstrap : MonoBehaviour
     {
         ServiceLocator.RegisterService(_coreStateMachine);
         ServiceLocator.RegisterService(new SceneLoader());
+        
+#if REMOTE_SETTINGS
+        ServiceLocator.RegisterService<IGameSettingsProvider>(new RemoteSettingsProvider());
+#else
+        ServiceLocator.RegisterService<IGameSettingsProvider>(new LocalSettingsProvider(_gameSettingsSO));
+#endif
     }
 
     private void InitStateMachine()

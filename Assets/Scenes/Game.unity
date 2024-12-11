@@ -643,6 +643,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _coreStateMachine: {fileID: 885860235}
+  _gameSettingsSO: {fileID: 11400000, guid: 991056bd2fcce3d4a9f56b5aefd6cd33, type: 2}
 --- !u!4 &502953653
 Transform:
   m_ObjectHideFlags: 0
@@ -2557,7 +2558,6 @@ MonoBehaviour:
   _block: {fileID: 4503336910194235434, guid: c20d89d27a74c4a119e0922a33b15111, type: 3}
   _spawnPoint: {fileID: 1650979856}
   _spawnBiasX: 2.25
-  _spawnRateDelay: 1
 --- !u!4 &2102270009
 Transform:
   m_ObjectHideFlags: 0

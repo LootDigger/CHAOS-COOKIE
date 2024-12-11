@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using Patterns.ServiceLocator;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -13,14 +15,13 @@ public class CakeSpawner : MonoBehaviour
     [SerializeField]
     public float _spawnBiasX = 2.25f;
     
-    [SerializeField]
-    private float _spawnRateDelay = 1f;
-
     private WaitForSeconds _waitYield;
+    private IGameSettingsProvider _gameSettingsProvider;
 
-    private void Awake()
+    private void Start()
     {
-        _waitYield = new WaitForSeconds(_spawnRateDelay);
+        _gameSettingsProvider = ServiceLocator.GetService<IGameSettingsProvider>();
+        _waitYield = new WaitForSeconds(_gameSettingsProvider.Settings.EnemySpawnRateDelay);
     }
 
     public void StartSpawningRoutine()
