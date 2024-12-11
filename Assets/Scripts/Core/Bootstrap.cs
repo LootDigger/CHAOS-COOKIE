@@ -1,4 +1,3 @@
-using System;
 using Patterns.ServiceLocator;
 using UnityEngine;
 using CORE.GameStates;
@@ -27,10 +26,12 @@ public class Bootstrap : MonoBehaviour
         ServiceLocator.RegisterService(_coreStateMachine);
         ServiceLocator.RegisterService(new SceneLoader());
         
-#if REMOTE_SETTINGS
-        ServiceLocator.RegisterService<IGameSettingsProvider>(new RemoteSettingsProvider());
+#if REMOTE_SERVICE_SYNC
+        ServiceLocator.RegisterService<IGameSettingsProvider>(new RemoteSettingsProvider()); 
+        ServiceLocator.RegisterService<IGameSaveProvider>(new RemoteSaveProvider());
 #else
         ServiceLocator.RegisterService<IGameSettingsProvider>(new LocalSettingsProvider(_gameSettingsSO));
+        ServiceLocator.RegisterService<IGameSaveProvider>(new LocalSaveProvider());
 #endif
     }
 

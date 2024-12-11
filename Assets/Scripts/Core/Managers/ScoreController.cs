@@ -1,10 +1,13 @@
 using CORE.UI;
+using Patterns.ServiceLocator;
 using UnityEngine;
 
 public class ScoreController : MonoBehaviour
 {
     [SerializeField]
     private UIManager _uiManager;
+    
+    private IGameSaveProvider _gameSaveProvider;
     
     public Score CurrentScore { get; private set; }
 
@@ -16,6 +19,7 @@ public class ScoreController : MonoBehaviour
     private void Start()
     {
         SubscribeModelEvents();
+        _gameSaveProvider = ServiceLocator.GetService<IGameSaveProvider>();
     }
 
     private void OnDestroy()
@@ -46,5 +50,19 @@ public class ScoreController : MonoBehaviour
     public void ResetGameScore()
     {
         CurrentScore.Value = 0;
+    }
+
+    public void SaveGameToSlot(int slotIndex)
+    {
+        _gameSaveProvider.SaveCurrentData(new GameSaveData()
+        {
+            _bestScore = CurrentScore.Value
+        },slotIndex);
+    }
+    
+    public void LoadGameSaveFromSlot(int slotIndex)
+    {
+        var gameSaveData = _gameSaveProvider.GetSave(slotIndex);
+        Debug.Log("SLOT: " + slotIndex + "; Value == " + gameSaveData._bestScore);
     }
 }
