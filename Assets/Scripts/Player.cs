@@ -34,7 +34,7 @@ public class Player : MonoBehaviour
         if (collision.gameObject.tag == "Block")
         {
             rigidBody.velocity = Vector2.zero;
-            SceneManager.LoadScene("Game");
+          //  SceneManager.LoadScene("Game");
         }
     }
 }

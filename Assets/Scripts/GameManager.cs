@@ -1,54 +1,60 @@
-using System.Collections;
-using System.Collections.Generic;
+using CORE.GameStates;
+using Patterns.ServiceLocator;
 using UnityEngine;
-using TMPro;
 
 public class GameManager : MonoBehaviour
 {
-    public GameObject block;
+    [SerializeField]
+    private GroundCollider _groundCollider;
 
-    public GameObject welcomeScreen;
-    public TextMeshProUGUI scoreText;
-
-    public float maxX;
-    public Transform spawnPoint;
-    public float spawnRate;
-
-    bool gameStarted = false;
-    private int scoreValue = 0;
-
-    void Update()
+    [SerializeField]
+    private ScoreController _scoreController;
+    
+    private CoreStateMachine _coreStateMachine;
+    private int _scoreTarget;
+    private readonly int _scoreValueDelta = 10;
+    
+    private void Start()
     {
-        welcomeScreen.SetActive(!gameStarted);
-        scoreText.enabled = gameStarted;
-        
-        if(Input.GetMouseButtonDown(0) && !gameStarted)
+        InitServices();
+        SubscribeEvents();
+
+        _scoreTarget = _scoreValueDelta;
+    }
+
+    private void OnDestroy()
+    {
+        UnsubscribeEvents();
+    }
+
+    private void InitServices()
+    {
+        _coreStateMachine = ServiceLocator.GetService<CoreStateMachine>();
+    }
+    
+    private void SubscribeEvents()
+    {
+        _scoreController.CurrentScore.OnModelChangedEvent += CurrentScoreOnOnModelChangedHandler;
+        _groundCollider.OnEnemyCollision += OnEnemyCollisionHandler;
+    }
+
+    private void UnsubscribeEvents()
+    {
+        _scoreController.CurrentScore.OnModelChangedEvent -= CurrentScoreOnOnModelChangedHandler;
+        _groundCollider.OnEnemyCollision -= OnEnemyCollisionHandler;
+    }
+    
+    private void CurrentScoreOnOnModelChangedHandler(int scoreValue)
+    {
+        if (scoreValue >= _scoreTarget)
         {
-            StartSpawning();
-            gameStarted = true;
-            scoreValue = 0;
+            _coreStateMachine.SetState<CORE_PauseState>();
+            _scoreTarget += _scoreValueDelta;
         }
-        
     }
-
-    public void incrementAndUpdateScore()
+    
+    private void OnEnemyCollisionHandler()
     {
-        scoreValue++;
-        scoreText.text = scoreValue.ToString();
+        _scoreController.IncreaseGameScore();
     }
-
-    private void StartSpawning()
-    {
-        float spawnDelayInSeconds = 0.5f;
-        InvokeRepeating("SpawnBlock", spawnDelayInSeconds, spawnRate);
-    }
-
-    private void SpawnBlock()
-    {
-        Vector3 spawnPosition = spawnPoint.position;
-        spawnPosition.x = Random.Range(-maxX, maxX);
-
-        Instantiate(block, spawnPosition, Quaternion.identity);
-    }
-
 }
