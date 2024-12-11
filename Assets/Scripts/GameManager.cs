@@ -11,15 +11,13 @@ public class GameManager : MonoBehaviour
     private ScoreController _scoreController;
     
     private CoreStateMachine _coreStateMachine;
-    private int _scoreTarget;
-    private readonly int _scoreValueDelta = 10;
+    private ADScoreCounter _adScoreCounter;
     
     private void Start()
     {
         InitServices();
         SubscribeEvents();
-
-        _scoreTarget = _scoreValueDelta;
+        _adScoreCounter = new ADScoreCounter();
     }
 
     private void OnDestroy()
@@ -46,11 +44,9 @@ public class GameManager : MonoBehaviour
     
     private void CurrentScoreOnOnModelChangedHandler(int scoreValue)
     {
-        if (scoreValue >= _scoreTarget)
-        {
-            _coreStateMachine.SetState<CORE_PauseState>();
-            _scoreTarget += _scoreValueDelta;
-        }
+        if (scoreValue < _adScoreCounter.ScoreLimit) return;
+        _adScoreCounter.ShiftScoreLimit();
+        _coreStateMachine.SetState<CORE_PauseState>();
     }
     
     private void OnEnemyCollisionHandler()
