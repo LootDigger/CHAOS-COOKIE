@@ -12,12 +12,14 @@ public class GameManager : MonoBehaviour
     
     private CoreStateMachine _coreStateMachine;
     private ADScoreCounter _adScoreCounter;
+    private IGameSettingsProvider _gameSettingsProvider;
     
     private void Start()
     {
         InitServices();
         SubscribeEvents();
-        _adScoreCounter = new ADScoreCounter();
+         _gameSettingsProvider = ServiceLocator.GetService<IGameSettingsProvider>();
+        _adScoreCounter = new ADScoreCounter(_gameSettingsProvider.Settings.ADTriggerScoreLimitShift);
     }
 
     private void OnDestroy()
